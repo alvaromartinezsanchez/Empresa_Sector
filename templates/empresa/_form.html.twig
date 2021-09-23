@@ -1,0 +1,9 @@
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <select name="sector_empresa" required>
+        {% for sector in sectores %}
+            <option value="{{ sector.nombre }}" {% if empresa.sector and sector.id == empresa.sector.id %} selected {% endif %}>{{ sector.nombre }}</option>
+        {% endfor %}
+    </select>
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Sector{% endblock %}
+
+{% block body %}
+    <h1>Create new Sector</h1>
+
+    {% if message %}
+        <span id="message_error">"El nombre de sector ya existe, intentalo con otro nombre"</span>
+    {% endif %}
+    
+    {{ include('sector/_form.html.twig') }}
+
+    <a href="{{ path('sector_index') }}">back to list</a>
+{% endblock %}

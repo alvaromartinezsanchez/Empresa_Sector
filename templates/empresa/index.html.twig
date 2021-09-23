@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Empresa index{% endblock %}
+
+{% block body %}
+    
+
+
+
+
+    <div class="container">
+    
+    {# total items count #}
+    <div class="head">
+        <h5>Listado Empresas:</h5>
+        <h6>Total: {{ pagination.getTotalItemCount }} </h6>
+        
+    </div>
+    
+    <table class="table table-dark table-striped">
+        <tr>
+            {# sorting of properties based on query components #}
+            <th{% if pagination.isSorted('e.id') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Id', 'e.id') }}
+            </th>
+            <th{% if pagination.isSorted(['e.nombre']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Nombre', 'e.nombre') }}
+            </th>
+            <th{% if pagination.isSorted(['e.telefono']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Telefono', 'e.telefono') }}
+            </th>
+            <th{% if pagination.isSorted(['e.email']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Email', 'e.email') }}
+            </th>
+            <th>
+                Sector
+            </th>
+            <th>Opciones</th>
+        </tr>
+
+        {# table body #}
+        {% for article in pagination %}
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
+                <td>{{ article.id }}</td>
+                <td>{{ article.nombre }}</td>
+                <td>{{ article.telefono }}</td>
+                <td>{{ article.email }}</td>
+                <td>{{ article.sector.nombre }}</td>
+                <td>
+                    <a class="btn btn-warning " href="{{ path('empresa_edit', {'id': article.id}) }}">edit</a>
+
+                    <form method="post" action="{{ path('empresa_delete', {'id': article.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+    <div class="row justify-content-between mb-2">
+        <a class="btn btn-success" href="{{ path('empresa_new') }}">Create new</a>
+        <a class="btn btn-info" href="{{ path('home') }}">Home</a>
+    </div>
+</div>
+{% endblock %}
