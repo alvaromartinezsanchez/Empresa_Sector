@@ -3,13 +3,29 @@
 {% block title %}New Sector{% endblock %}
 
 {% block body %}
-    <h1>Create new Sector</h1>
 
-    {% if message %}
-        <span id="message_error">"El nombre de sector ya existe, intentalo con otro nombre"</span>
-    {% endif %}
     
-    {{ include('sector/_form.html.twig') }}
+    
+    <div class="container">
+        <div class="row justify-content-center my-5">
+            <h1>Nueva Sector</h1>
+        </div>
+        {% if message %}
+        <div class="row justify-content-center">
+            <div id="message_error" class="col-8">
+                <span>"El nombre de sector ya existe, intentalo con otro nombre"</span>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row justify-content-center">
+            <div class="col-8">
+                <div class="row mb-3">
+                    <a class="btn btn-info" href="{{ path('sector_index') }}">Atras</a>
+                </div>
+            </div>
+        </div>
 
-    <a href="{{ path('sector_index') }}">back to list</a>
+        {{ include('sector/_form.html.twig') }}
+
+    </div>
 {% endblock %}

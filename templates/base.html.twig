@@ -15,8 +15,22 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}
-        
+        {% block header %}
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+                {% if app.user.role is defined %}
+                <div class="container-fluid">
+                    <a href="{{ path('logout') }}" class="navbar-brand">Logout</a>
+                    <div style="color:white">{{ app.user.role |slice(5,10) }}</div>
+                </div>
+                {% else %}
+                    <a href="{{ path('login') }}" class="navbar-brand">Login</a>
+                {% endif %}
+            </nav>
+        {% endblock %}
+
+        {% block body %} {% endblock %}
+        {% block footer %}
+            <footer class="text-muted align-self-center">&copy; Alvaro Martinez</footer> 
         {% endblock %}
     </body>
 </html>

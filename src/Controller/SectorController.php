@@ -21,7 +21,20 @@ class SectorController extends AbstractController
      */
     public function index($error = false,EntityManagerInterface $em, PaginatorInterface $paginator, Request $request): Response
     {
-        $query = $em->getRepository(Sector::class)->findAllSectores();
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        $sector_user = $usuario->getIdSector();
+        $sector_user = $sector_user[0]->getId();
+
+        if($role == 'ROLE_ADMIN'){
+           $dql   = "SELECT s FROM App:Sector s"; 
+        }else{
+            $dql = "SELECT s FROM App:Sector s WHERE s.id = $sector_user";
+        }
+
+        
+        $query = $em->createQuery($dql);
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
@@ -30,7 +43,8 @@ class SectorController extends AbstractController
 
         return $this->render('sector/index.html.twig', [
             'pagination' => $pagination,
-            'error' => $error
+            'error' => $error,
+            'role' => $role
         ]);
     }
 
@@ -39,6 +53,13 @@ class SectorController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        if($role != 'ROLE_ADMIN'){
+            return $this->redirectToRoute('sector_index', [], Response::HTTP_SEE_OTHER);
+        }
+
         $sector = new Sector();
         $form = $this->createForm(SectorType::class, $sector);
         $form->handleRequest($request);
@@ -76,6 +97,13 @@ class SectorController extends AbstractController
     
     public function show(Sector $sector): Response
     {
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        if($role != 'ROLE_ADMIN'){
+            return $this->redirectToRoute('sector_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         return $this->render('sector/show.html.twig', [
             'sector' => $sector,
         ]);
@@ -86,6 +114,13 @@ class SectorController extends AbstractController
      */
     public function edit(Request $request, Sector $sector): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        if($role != 'ROLE_ADMIN'){
+            return $this->redirectToRoute('sector_index', [], Response::HTTP_SEE_OTHER);
+        }
+
         $form = $this->createForm(SectorType::class, $sector);
         $form->handleRequest($request);
 
@@ -106,6 +141,21 @@ class SectorController extends AbstractController
      */
     public function delete(Request $request, Sector $sector): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+
+        $usuarios_sector = $sector->getIdUsuario();
+
+        if(count($usuarios_sector) >= 1){
+            $error = true;
+            return $this->redirectToRoute('sector_index', ['error' => $error], Response::HTTP_SEE_OTHER);
+        }
+
+        if($role != 'ROLE_ADMIN'){
+            return $this->redirectToRoute('sector_index', [], Response::HTTP_SEE_OTHER);
+        }
+
         $error = false;
         try {
             if ($this->isCsrfTokenValid('delete'.$sector->getId(), $request->request->get('_token'))) {

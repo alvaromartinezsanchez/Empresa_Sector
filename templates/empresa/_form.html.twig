@@ -1,9 +1,28 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <select name="sector_empresa" required>
-        {% for sector in sectores %}
-            <option value="{{ sector.nombre }}" {% if empresa.sector and sector.id == empresa.sector.id %} selected {% endif %}>{{ sector.nombre }}</option>
-        {% endfor %}
-    </select>
-    <button class="btn">{{ button_label|default('Save') }}</button>
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div class="row justify-content-center py-3"  style="background-color: gray; border-radius: 10px">
+            <div class="col-md-5">
+                {{ form_row(form.nombre) }}
+            </div>
+            <div class="col-md-5">
+                {{ form_row(form.telefono) }}
+            </div>
+            <div class="col-md-5">
+                {{ form_row(form.email) }}
+            </div>
+            <div class="col-md-5 form-group">
+                <label for="sector_empresa" class="form-label">Sector</label>
+                <select class="form-control col-8" name="sector_empresa" id="sector_empresa" required>
+                    {% for sector in sectores %}
+                        <option class="col-3" value="{{ sector.nombre }}" {% if empresa.sector and sector.id == empresa.sector.id %} selected {% endif %}>{{ sector.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-10"><button class="btn btn-success">{{ button_label|default('Save') }}</button></div>
+        </div>
+    </div>
+</div>
+    
 {{ form_end(form) }}
+<div class="mb-5 mt-5"></div>

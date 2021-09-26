@@ -24,14 +24,8 @@ class EmpresaType extends AbstractType
             ))
             ->add('email', EmailType::class, array(
                 'label' => 'Email'
-            ))
-        ;
+            ));
     }
 
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => Empresa::class,
-        ]);
-    }
+    
 }

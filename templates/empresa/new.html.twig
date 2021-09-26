@@ -7,10 +7,17 @@
     <div class="row justify-content-center">
         <h1>Create new Empresa</h1>
     </div>
+    <div class="row justify-content-center">
+            <div class="col-8">
+                <div class="row mb-3">
+                    <a class="btn btn-info" href="{{ path('empresa_index') }}">Atras</a>
+                </div>
+            </div>
+        </div>
 
     {{ include('empresa/_form.html.twig') }}
 
-    <a href="{{ path('empresa_index') }}">Atras</a>
+    
 
 </div>
 {% endblock %}

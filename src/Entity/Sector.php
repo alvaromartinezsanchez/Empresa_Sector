@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Sector
  *
  * @ORM\Table(name="sector")
- * @ORM\Entity(repositoryClass="App\Repository\SectorRepository")
+ * @ORM\Entity
  */
 class Sector
 {
@@ -28,6 +30,21 @@ class Sector
      */
     private $nombre;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Usuario", mappedBy="idSector")
+     */
+    private $idUsuario;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->idUsuario = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,5 +62,31 @@ class Sector
         return $this;
     }
 
+    /**
+     * @return Collection|Usuario[]
+     */
+    public function getIdUsuario(): Collection
+    {
+        return $this->idUsuario;
+    }
+
+    public function addIdUsuario(Usuario $idUsuario): self
+    {
+        if (!$this->idUsuario->contains($idUsuario)) {
+            $this->idUsuario[] = $idUsuario;
+            $idUsuario->addIdSector($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdUsuario(Usuario $idUsuario): self
+    {
+        if ($this->idUsuario->removeElement($idUsuario)) {
+            $idUsuario->removeIdSector($this);
+        }
+
+        return $this;
+    }
 
 }

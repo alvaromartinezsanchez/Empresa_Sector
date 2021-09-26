@@ -1,0 +1,40 @@
+{{ form_start(form) }}
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div class="row justify-content-center py-3"  style="background-color: gray; border-radius: 10px">
+            <div class="col-md-5">
+                {{ form_row(form.nombre) }}
+            </div>
+            <div class="col-md-5">
+                {{ form_row(form.apellidos) }}
+            </div>
+            <div class="col-md-10">
+                {{ form_row(form.email) }}
+            </div>
+            <div class="col-md-5">
+                {{ form_row(form.role) }}
+            </div>
+            <div class="col-md-5 form-group">
+                <label for="sectores_usuario" class="form-label">Sector</label>
+                <select class="form-control" name="sectores_usuario" id="sectores_usuario" required>
+                    {% for sector in sectores %}
+                        <option class="col-3" value="{{ sector.nombre }}" {% if sector_user is defined and sector.id == sector_user.id %} selected {% endif %}>{{ sector.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            {% if changePassword is defined and changePassword or create is defined and create %}
+                <div class="col-md-10">
+                    {{ form_row(form.password) }}
+                </div>
+            {% endif %}
+
+            <div class="col-4 ml-1"><button class="btn btn-success">{{ button_label|default('Save') }}</button></div>
+            {% if changePassword is defined and not changePassword %}
+                <div class="col-6"><a class="btn btn-warning" href="{{ path('usuario_edit', {'id': usuario.id, 'changePassword': true}) }}">Cambiar Contraseña</a></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{{ form_end(form) }}
+<div class="mb-5 mt-5"></div>

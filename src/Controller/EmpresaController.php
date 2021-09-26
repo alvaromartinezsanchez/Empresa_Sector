@@ -21,24 +21,107 @@ class EmpresaController extends AbstractController
      */
     public function index(EntityManagerInterface $em, PaginatorInterface $paginator, Request $request): Response
     {
-        
-        $query = $em->getRepository(Empresa::class)->findAllEmpresas();
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        $sector_user = $usuario->getIdSector();
+        $sector_user = $sector_user[0]->getId();
+
+        $sectors = $this->getDoctrine()
+            ->getRepository(Sector::class)
+            ->findAll();
+
+        if($role == 'ROLE_ADMIN'){
+           $dql   = "SELECT e FROM App:Empresa e"; 
+        }else{
+            $dql = "SELECT e FROM App:Empresa e WHERE e.sector = $sector_user";
+        }
+
+        $query = $em->createQuery($dql);
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
-            10/*limit per page*/
+            10 /*limit per page*/
         );
 
         return $this->render('empresa/index.html.twig', [
-            'pagination' => $pagination
+            'pagination' => $pagination,
+            'role' => $role,
+            'sectors' => $sectors
         ]);
-        /*$empresas = $this->getDoctrine()
-            ->getRepository(Empresa::class)
+        
+    }
+
+    /**
+     * @Route("/filter", name="empresa_filter", methods={"GET","POST"})
+     */
+    public function filter(EntityManagerInterface $em, PaginatorInterface $paginator,Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        $sector_user = $usuario->getIdSector();
+        $sector_user = $sector_user[0]->getId();
+
+        $filtro = $request->get('filtro');
+
+        $sectors = $this->getDoctrine()
+            ->getRepository(Sector::class)
             ->findAll();
+        
+
+        if($role == 'ROLE_ADMIN'){
+           $dql   = "SELECT e FROM App:Empresa e WHERE e.nombre LIKE '%".$filtro."%'"; 
+        }else{
+            $dql = "SELECT e FROM App:Empresa e WHERE e.sector = $sector_user and e.nombre LIKE '%".$filtro."%'";
+        }
+
+        $query = $em->createQuery($dql);
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
 
         return $this->render('empresa/index.html.twig', [
-            'empresas' => $empresas,
-        ]);*/
+            'pagination' => $pagination,
+            'role' => $role,
+            'sectors' => $sectors
+        ]);
+    }
+
+    /**
+     * @Route("/filterSector", name="empresa_filter_sector", methods={"GET","POST"})
+     */
+    public function filterSector(EntityManagerInterface $em, PaginatorInterface $paginator,Request $request): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        $filtro = $request->get('filtro');
+        $filtro = $this->getDoctrine()->getRepository(Sector::class)->findBy(['nombre' => $filtro]);
+        $filtro = $filtro[0]->getId();
+
+        $sectors = $this->getDoctrine()
+            ->getRepository(Sector::class)
+            ->findAll();
+        
+        $dql = "SELECT e FROM App:Empresa e WHERE e.sector = $filtro ";
+        
+
+        $query = $em->createQuery($dql);
+        $pagination = $paginator->paginate(
+            $query, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+
+        return $this->render('empresa/index.html.twig', [
+            'pagination' => $pagination,
+            'role' => $role,
+            'sectors' => $sectors,
+            'filtro' => $filtro
+        ]);
     }
 
     /**
@@ -46,6 +129,13 @@ class EmpresaController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        if($role != 'ROLE_ADMIN'){
+            return $this->redirectToRoute('empresa_index', [], Response::HTTP_SEE_OTHER);
+        }
+
         $empresa = new Empresa();
         $form = $this->createForm(EmpresaType::class, $empresa);
         $form->handleRequest($request);
@@ -77,6 +167,13 @@ class EmpresaController extends AbstractController
      */
     public function show(Empresa $empresa): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        if($role != 'ROLE_ADMIN'){
+            return $this->redirectToRoute('empresa_index', [], Response::HTTP_SEE_OTHER);
+        }
+
         return $this->render('empresa/show.html.twig', [
             'empresa' => $empresa,
         ]);
@@ -87,6 +184,12 @@ class EmpresaController extends AbstractController
      */
     public function edit(Request $request, Empresa $empresa): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        if($role != 'ROLE_ADMIN'){
+            return $this->redirectToRoute('empresa_index', [], Response::HTTP_SEE_OTHER);
+        }
         $form = $this->createForm(EmpresaType::class, $empresa);
         $form->handleRequest($request);
 
@@ -115,6 +218,12 @@ class EmpresaController extends AbstractController
      */
     public function delete(Request $request, Empresa $empresa): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $usuario = $this->getUser();
+        $role = $usuario->getRole();
+        if($role != 'ROLE_ADMIN'){
+            return $this->redirectToRoute('empresa_index', [], Response::HTTP_SEE_OTHER);
+        }
         if ($this->isCsrfTokenValid('delete'.$empresa->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($empresa);

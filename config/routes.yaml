@@ -1,3 +1,16 @@
 home:
     path: /
     controller: App\Controller\HomeController::index
+
+usuario_edit:
+    path: /usuario/edit/{id}/{changePassword}
+    controller: App\Controller\UsuarioController::edit
+    defaults:
+        changePassword: false
+
+login:
+    path: /login
+    controller: App\Controller\UsuarioController::login
+
+logout:
+    path: /logout
