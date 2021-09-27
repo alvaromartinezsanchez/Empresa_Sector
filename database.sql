@@ -7,10 +7,20 @@ nombre          varchar(255) not null,
 CONSTRAINT pk_sector PRIMARY KEY(id) 
 )ENGINE=InnoDb;
 
+INSERT INTO sector VALUES(null, 'AdminSystem');
 INSERT INTO sector VALUES(null, 'Tecnologico');
+INSERT INTO sector VALUES(null, 'Automocion');
+INSERT INTO sector VALUES(null, 'Farmaceutico');
+INSERT INTO sector VALUES(null, 'Textil');
+INSERT INTO sector VALUES(null, 'Construccion');
+INSERT INTO sector VALUES(null, 'Alimentacion');
+INSERT INTO sector VALUES(null, 'Metalurgia');
 INSERT INTO sector VALUES(null, 'Transporte');
-INSERT INTO sector VALUES(null, 'Inmobiliario');
-INSERT INTO sector VALUES(null, 'Alimenticio');
+INSERT INTO sector VALUES(null, 'Sanitario');
+INSERT INTO sector VALUES(null, 'Calzado');
+INSERT INTO sector VALUES(null, 'Restauracion');
+INSERT INTO sector VALUES(null, 'Siderurgia');
+INSERT INTO sector VALUES(null, 'Educacion');
 
 
 CREATE TABLE empresa(
@@ -24,8 +34,18 @@ CONSTRAINT uq_email UNIQUE(email),
 CONSTRAINT fk_sector_empresa FOREIGN KEY(sector) REFERENCES sector(id) 
 )ENGINE=InnoDb;
 
-INSERT INTO empresa VALUES(NULL, 'PCComponentes', '968635898', 'pccomponentes@pccomponentes.com', 1);
-INSERT INTO empresa VALUES(NULL, 'Seur', '986985743', 'seur@seur.com', 2);
+INSERT INTO empresa VALUES(NULL, 'PCComponentes', '968635898', 'pccomponentes@pccomponentes.com', 2);
+INSERT INTO empresa VALUES(NULL, 'MediaMarck', '968875412', 'MediaMarck@MediaMarck.com', 2);
+INSERT INTO empresa VALUES(NULL, 'Seur', '986985743', 'seur@seur.com', 9);
+INSERT INTO empresa VALUES(NULL, 'MRV', '986988796', 'mrv@mrv.com', 9);
+INSERT INTO empresa VALUES(NULL, 'Mercedes', '987654123', 'mercedes@mercedes.com', 3);
+INSERT INTO empresa VALUES(NULL, 'Audi', '654123789', 'audi@audi.com', 3);
+INSERT INTO empresa VALUES(NULL, 'BMV', '654784253', 'bmw@bmw.com', 3);
+INSERT INTO empresa VALUES(NULL, 'Renault', '654778410', 'renault@renault.com', 3);
+INSERT INTO empresa VALUES(NULL, 'Opel', '654710369', 'Opel@Opel.com', 3);
+INSERT INTO empresa VALUES(NULL, 'Seat', '6874521036', 'Seat@Seat.com', 3);
+INSERT INTO empresa VALUES(NULL, 'Zara', '6874577777', 'Zara@Zara.com', 5);
+INSERT INTO empresa VALUES(NULL, 'Primark', '6800077542', 'Primark@Primark.com', 5);
 
 CREATE TABLE usuario(
 id              int(255) auto_increment not null,
@@ -52,4 +72,4 @@ CONSTRAINT fk_usuario FOREIGN KEY(id_usuario) REFERENCES usuario(id) ON DELETE C
 )ENGINE=InnoDB;
 
 INSERT INTO usuario_sector VALUES(1,1);
-INSERT INTO usuario_sector VALUES(2,2);
+INSERT INTO usuario_sector VALUES(2,3);
